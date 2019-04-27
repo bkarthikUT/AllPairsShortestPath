@@ -1,29 +1,20 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class AllPairsShortestPathInc {
 
-	final static int INF = 999999;
+	final static int INF = Integer.MAX_VALUE;
 	long finalStartTime, finalEndTime;
 	static long finalTotalTime;
 
-	int[][] floydWarshall(int graph[][]) 
+	int[][] floydWarshall(int dist[][], int V) 
 	{ 
 		finalStartTime = System.nanoTime();
 		
-		int V = graph.length;
-		int dist[][] = new int[V][V]; 
-		int i, j, k; 
-
-		/* Initialize the solution matrix same as input graph matrix. 
-		Or we can say the initial values of shortest distances 
-		are based on shortest paths considering no intermediate 
-		vertex. */
-		for (i = 0; i < V; i++) 
-			for (j = 0; j < V; j++) 
-				dist[i][j] = graph[i][j]; 
+		int i, j, k, sum; 
 
 		/* Add all vertices one by one to the set of intermediate 
 		vertices. 
@@ -36,6 +27,9 @@ public class AllPairsShortestPathInc {
 				becomes {0, 1, 2, .. k} */
 		for (k = 0; k < V; k++) 
 		{ 
+			/*if(k % 100 == 0) {
+				System.out.println("Time is: " + (System.nanoTime()-finalStartTime)/1000000000 + " seconds and Vertices completed: " + k);
+			}*/
 			// Pick all vertices as source one by one 
 			for (i = 0; i < V; i++) 
 			{ 
@@ -44,9 +38,16 @@ public class AllPairsShortestPathInc {
 				for (j = 0; j < V; j++) 
 				{ 
 					// If vertex k is on the shortest path from 
-					// i to j, then update the value of dist[i][j] 
-					if (dist[i][k] + dist[k][j] < dist[i][j]) 
-						dist[i][j] = dist[i][k] + dist[k][j]; 
+					// i to j, then update the value of dist[i][j]
+					if (dist[i][k] == INF || dist[k][j] == INF) {
+						sum = INF;
+					} else {
+						sum = dist[i][k] + dist[k][j];
+					}
+						
+					if (sum < dist[i][j]) {
+						dist[i][j] = sum;
+					}	 
 				} 
 			} 
 		}
@@ -57,49 +58,25 @@ public class AllPairsShortestPathInc {
 		return dist;
 	}
 	
-	int[][] incrementalAllPairsShortestPath(int oldDist[][], int newEdges[][][]) {
+	int[][] incrementalAllPairsShortestPath(int newDist[][], int newEdges[][], int V) {
 		
 		finalStartTime = System.nanoTime();
-		
-		int V = oldDist.length;
-		int newDist[][] = new int[V+1][V+1];
-		
-		//long allocTime = System.nanoTime();
-		
-		// Copying existing shortest path distances to the new matrix
-		for (int a = 0; a < V; a++) 
-		{ 
-			for (int b = 0; b < V; b++) 
-			{ 
-				newDist[a][b] = oldDist[a][b];
-			}
-		}
-		
-		//long copyTime = System.nanoTime();
-		
-		// Temporarily filling the distances as Infinity for the new node
-		for (int k = 0; k < V; k++) 
-		{ 
-			newDist[V][k] = INF;
-			newDist[k][V] = INF;
-		}
-		newDist[V][V] = 0;
-		
-		//long fillTime = System.nanoTime();
 		
 		// Step 1 - Finding the shortest path distance between new node and existing nodes
 		for (int j = 0; j < newEdges.length; j++)
 		{
-			if (newEdges[0][j][0] == 0) {
-				newDist[V][newEdges[0][j][1]-1] = newEdges[0][j][2];
+			if (newEdges[j][0] == 0) {
+				newDist[V][newEdges[j][1]-1] = newEdges[j][2];
 				for (int i = 0; i < V+1; i++) {
-					int altDist = newDist[V][newEdges[0][j][1]-1]+newDist[newEdges[0][j][1]-1][i];
+					int altDist = (newDist[V][(newEdges[j][1])-1] == INF || newDist[(newEdges[j][1])-1][i] == INF) ? INF 
+							: newDist[V][(newEdges[j][1])-1]+newDist[(newEdges[j][1])-1][i];
 					newDist[V][i] = newDist[V][i] < altDist ? newDist[V][i] : altDist;	
 				}
-			} else if (newEdges[0][j][0] == 1) {
-				newDist[newEdges[0][j][1]-1][V] = newEdges[0][j][2];
+			} else if (newEdges[j][0] == 1) {
+				newDist[(newEdges[j][1])-1][V] = newEdges[j][2];
 				for (int i = 0; i < V+1; i++) {
-					int altDist = newDist[i][newEdges[0][j][1]-1]+newDist[newEdges[0][j][1]-1][V];
+					int altDist = (newDist[i][(newEdges[j][1])-1] == INF || newDist[(newEdges[j][1])-1][V] == INF ) ? INF 
+							: newDist[i][(newEdges[j][1])-1]+newDist[(newEdges[j][1])-1][V];
 					newDist[i][V] = newDist[i][V] < altDist ? newDist[i][V] : altDist;
 				}
 			} else {
@@ -113,7 +90,7 @@ public class AllPairsShortestPathInc {
 		// Step 2 - Check for updates to shortest path distances between the existing nodes
 		for (int i = 0; i < V; i++) {
 			for (int j = 0; j < V; j++) {
-				int altDist = newDist[i][V]+newDist[V][j];
+				int altDist = (newDist[i][V] == INF || newDist[V][j] == INF) ? INF : newDist[i][V]+newDist[V][j];
 				newDist[i][j] = newDist[i][j] < altDist ? newDist[i][j] : altDist;
 			}
 		}
@@ -122,19 +99,75 @@ public class AllPairsShortestPathInc {
 		
 		finalEndTime = System.nanoTime();
 		finalTotalTime = finalEndTime-finalStartTime;
-		/*finalTotalTime = finalEndTime-finalStartTime-((finalEndTime - step2Time)*5);
-		System.out.println("allocTime is " + (allocTime - finalStartTime));
-		System.out.println("copyTime is " + (copyTime - allocTime));
-		System.out.println("fillTime is " + (fillTime - copyTime));
-		System.out.println("step1Time is " + (step1Time - fillTime));
+		/*finalTotalTime = finalEndTime-finalStartTime-((finalEndTime - step2Time)*2);
+		System.out.println("step1Time is " + (step1Time - finalStartTime));
 		System.out.println("step2Time is " + (step2Time - step1Time));
-		System.out.println("nanoTime is " + ((finalEndTime - step2Time)*5));*/
+		System.out.println("nanoTime is " + ((finalEndTime - step2Time)*2));*/
 		
 		return newDist;	
 	}
+	
+	private int[][] populateGraph(String inputFile, String inputIncFile) {
+		int[][] distance = null;
+		int noOfVertices;
+		FileReader fr = null;
+		BufferedReader br = null;
+		String[] filename = {inputFile, inputIncFile};
+		
+		try {
+			for(int k = 0; k < filename.length; k++) {
+				fr = new FileReader(filename[k]);
+				br = new BufferedReader(fr);
 
-	void printSolution(int dist[][], int mSize) 
+				String sCurrentLine;
+
+				while ((sCurrentLine = br.readLine()) != null) {
+					String[] temp = sCurrentLine.split(" ");
+					if ("p".equals(temp[0])) {
+						noOfVertices = Integer.parseInt(temp[2])+1;
+						distance = new int[noOfVertices][noOfVertices];
+						
+						//Initialize the distances with zero and infinity
+						for (int i = 0; i < noOfVertices; i++) {
+							for (int j = 0; j < noOfVertices; j++) {
+								if (i == j) {
+									distance[i][j] = 0;
+								} else {
+									distance[i][j] = Integer.MAX_VALUE;
+								}
+							}
+						}
+					}
+					if ("a".equals(temp[0])) {
+						int x = Integer.parseInt(temp[1]);
+						int y = Integer.parseInt(temp[2]);
+						int weight = Integer.parseInt(temp[3]);
+						distance[x - 1][y - 1] = weight;	
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (fr != null) {
+					fr.close();
+				}
+				if (br != null) {
+					br.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return distance;
+	}
+
+	void printMatrix(int dist[][], String label) 
 	{ 
+		int mSize = dist.length;
+		System.out.println(label + " is:");
+		
 		for (int i = 0; i < mSize; ++i) 
 		{ 
 			for (int j = 0; j < mSize; ++j) 
@@ -151,40 +184,33 @@ public class AllPairsShortestPathInc {
 	public static void main (String[] args) throws Exception 
 	{
 		/*
-		 * @param - args[0] is the adjacency list file name
-		 * args[1] is the mode to run ("baseline" or "incremental") 
+		 * @param - args[0] is the file with input graph as an adjacency list
+		 * args[1] is the file with incremental input as an adjacency list
+		 * args[2] is the mode to run ("baseline" or "incremental")  
 		 */
-		String incAdjListFile = args[0];
-		String mode = args[1];
-		int n, m = 1;
-		int dist[][] = {};
+		String inputFile = args[0];
+		String incAdjListFile = args[1];
+		String mode = args[2];
+		int n;
+		int dist[][] = null;
+		int incGraph[][] = null;
       	String str;
 		String st[] = new String[3];
 		ArrayList<Integer> input = new ArrayList<Integer>();
 		
-		// TBD - Read input from file
-      	int graph[][] = { {0, 3, INF, 7}, 
-						{8, 0, 2, INF}, 
-						{5, INF, 0, 1}, 
-						{2, INF, INF, 0}
-						};
+		AllPairsShortestPathInc a = new AllPairsShortestPathInc();
 		
-		int graph2[][] = { {0, 3, INF, 7, INF}, 
-							{8, 0, 2, INF, 4}, 
-							{5, INF, 0, 1, INF}, 
-							{2, INF, INF, 0, 1},
-					        {INF, INF, 5, INF, 0}
-						};
+		//Read input and construct the graph as adjacency matrix
+		incGraph = a.populateGraph(inputFile, incAdjListFile);
 		
-		AllPairsShortestPathInc a = new AllPairsShortestPathInc(); 
+		//a.printMatrix(incGraph,"Incremental Graph");
 		
 		/*
 		 *  Run baseline algorithm if mode is "baseline" or 
 		 *  incremental algorithm if mode is "incremental"
 		 */
 		if(mode.equals("baseline")) {
-			dist = a.floydWarshall(graph2);
-			System.out.println("Total time taken for baseline algorithm is " + finalTotalTime);
+			dist = a.floydWarshall(incGraph, incGraph.length);
 		} else {
 	      	/* 
 	      	 * Reading file with info on new edges and weights (from new node)
@@ -196,29 +222,30 @@ public class AllPairsShortestPathInc {
 			
 			while ((str = br.readLine()) != null) {
 				st = str.split(" ");
-				for(int s=0; s<st.length; s++)
+				for(int s=1; s<st.length; s++) {
 					input.add(Integer.parseInt(st[s]));
+				}
 			}
 			
 			n = input.get(0);
 			
-			int adjList[][][] = new int[n][n][n];
+			/*
+			 * Format of adjList: adjList[edge#][0] - incoming (1) or outgoing (0)
+			 * adjList[edge#][1] - node that the edge connects the new node with
+			 * adjList[edge#][2] - weight of this edge
+			 */
 			
-			//System.out.println("n: " + n);
-			
-			while (m < input.size()) {
-				//System.out.println("m: " + m);
-				//System.out.println("input size: " + input.size());
-				//for (int i = 0; i < n-2; i++) {
-					for (int j = 0; j < n; j++) {
-						//System.out.println("incrementing j...");
-						for (int k = 0; k < 3; k++) {
-							adjList[0][j][k] = input.get(m);
-							m++;
-							//System.out.println("adjList[0]["+j+"]["+k+"] = " + adjList[0][j][k]);
-						}
-					}
-				//}
+			int adjList[][] = new int[n][3];
+
+			for (int j = 1; j < 3*n; j+=3) {
+				if(input.get(j) < input.get(j+1)) {
+					adjList[(j-1)/3][0] = 1;
+					adjList[(j-1)/3][1] = input.get(j);
+				}else {
+					adjList[(j-1)/3][0] = 0;
+					adjList[(j-1)/3][1] = input.get(j+1);
+				}
+				adjList[(j-1)/3][2] = input.get(j+2);
 			}
 	      	
 			br.close();
@@ -227,14 +254,14 @@ public class AllPairsShortestPathInc {
 			 * Run Floyd Warshall baseline algorithm and
 			 * get the shortest path distances for old graph
 			 */
-			int tempDist[][] = a.floydWarshall(graph);
+			int tempDist[][] = a.floydWarshall(incGraph, incGraph.length-1);
 					
 			// Calling the incremental algorithm
-			dist = a.incrementalAllPairsShortestPath(tempDist, adjList);
-			System.out.println("Total time taken for incremental algorithm is " + finalTotalTime);
+			dist = a.incrementalAllPairsShortestPath(tempDist, adjList, tempDist.length-1);
 		}
 		
 		// Print the final matrix with the shortest distances
-		a.printSolution(dist, dist.length);
+		a.printMatrix(dist, "Shortest path solution");
+		System.out.println("Total time taken for the " + mode + " algorithm is " + finalTotalTime);
 	} 
 }
