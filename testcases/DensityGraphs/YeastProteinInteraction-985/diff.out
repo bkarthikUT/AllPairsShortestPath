@@ -1,0 +1,4 @@
+987c987
+< Total time taken for the baseline algorithm is 1758903328
+---
+> Total time taken for the incremental algorithm is 6868486

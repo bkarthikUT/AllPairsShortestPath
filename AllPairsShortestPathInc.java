@@ -66,14 +66,14 @@ public class AllPairsShortestPathInc {
 		for (int j = 0; j < newEdges.length; j++)
 		{
 			if (newEdges[j][0] == 0) {
-				newDist[V][newEdges[j][1]-1] = newEdges[j][2];
+				newDist[V][newEdges[j][1]-1] = (newEdges[j][2] < newDist[V][newEdges[j][1]-1]) ? newEdges[j][2] : newDist[V][newEdges[j][1]-1];
 				for (int i = 0; i < V+1; i++) {
 					int altDist = (newDist[V][(newEdges[j][1])-1] == INF || newDist[(newEdges[j][1])-1][i] == INF) ? INF 
 							: newDist[V][(newEdges[j][1])-1]+newDist[(newEdges[j][1])-1][i];
 					newDist[V][i] = newDist[V][i] < altDist ? newDist[V][i] : altDist;	
 				}
 			} else if (newEdges[j][0] == 1) {
-				newDist[(newEdges[j][1])-1][V] = newEdges[j][2];
+				newDist[(newEdges[j][1])-1][V] = (newEdges[j][2] < newDist[(newEdges[j][1])-1][V]) ? newEdges[j][2] : newDist[(newEdges[j][1])-1][V];
 				for (int i = 0; i < V+1; i++) {
 					int altDist = (newDist[i][(newEdges[j][1])-1] == INF || newDist[(newEdges[j][1])-1][V] == INF ) ? INF 
 							: newDist[i][(newEdges[j][1])-1]+newDist[(newEdges[j][1])-1][V];
@@ -142,7 +142,9 @@ public class AllPairsShortestPathInc {
 						int x = Integer.parseInt(temp[1]);
 						int y = Integer.parseInt(temp[2]);
 						int weight = Integer.parseInt(temp[3]);
-						distance[x - 1][y - 1] = weight;	
+						if(weight < distance[x - 1][y - 1]) {
+							distance[x - 1][y - 1] = weight;	
+						}
 					}
 				}
 			}
