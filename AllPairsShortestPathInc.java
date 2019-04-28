@@ -188,7 +188,7 @@ public class AllPairsShortestPathInc {
 		/*
 		 * @param - args[0] is the file with input graph as an adjacency list
 		 * args[1] is the file with incremental input as an adjacency list
-		 * args[2] is the mode to run ("baseline" or "incremental")  
+		 * args[2] is the mode to run ("FW" or "incremental")  
 		 */
 		String inputFile = args[0];
 		String incAdjListFile = args[1];
@@ -208,10 +208,10 @@ public class AllPairsShortestPathInc {
 		//a.printMatrix(incGraph,"Incremental Graph");
 		
 		/*
-		 *  Run baseline algorithm if mode is "baseline" or 
+		 *  Run FW algorithm if mode is "FW" or 
 		 *  incremental algorithm if mode is "incremental"
 		 */
-		if(mode.equals("baseline")) {
+		if(mode.equals("FW")) {
 			dist = a.floydWarshall(incGraph, incGraph.length);
 		} else {
 	      	/* 
