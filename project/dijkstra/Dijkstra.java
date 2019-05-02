@@ -2,6 +2,7 @@ package project.dijkstra;
 
 
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,10 +41,13 @@ public class Dijkstra {
 //		// System.out.println(outputFileName);
 			
 			
-			String[] inputPaths = new String[] { "./testcases/DensityGraphs/", "./testcases/SparseGraphs/", "./testcases/Density_Sweep/" };
+//			String[] inputPaths = new String[] { "./testcases/DensityGraphs/", "./testcases/SparseGraphs/", "./testcases/Density_Sweep/" };
+			String[] inputPaths = new String[] { "./testcases/DensityGraphs/" };
 
-			String[] densityGraphs = new String[] { "SocialNetwork-419", "WebPages-589", "YeastProteinInteraction-985",
-					"PsgAirTraffic-1148", "P2PKazaa-3403", "P2PWeb-6049", "InternetRouters-10900" };
+
+//			String[] densityGraphs = new String[] { "SocialNetwork-419", "WebPages-589", "YeastProteinInteraction-985",
+//					"PsgAirTraffic-1148", "P2PKazaa-3403", "P2PWeb-6049", "InternetRouters-10900" };
+			String[] densityGraphs = new String[] { "InternetRouters-10900" };
 
 			String[] sparseGraphs = new String[] { "SYN_5", "NY_50", "BAY_1000", "NY_5000", "COL_10000" };
 			
@@ -79,6 +83,7 @@ public class Dijkstra {
 				String inputFileName = paths.get(i)+"/graph";
 				String incFileName = paths.get(i)+"/inc";
 				String outputFileName = paths.get(i)+"/DK.out";
+				String diffFileName = paths.get(i)+"/DKDiff.out";
 				Dijkstra dijkstra = new Dijkstra();
 
 				long incrementalStart = System.nanoTime();
@@ -90,6 +95,10 @@ public class Dijkstra {
 						+ (dijkstra.incrementalDijkstraTime));
 
 				try {
+					File file = new File(outputFileName);
+					file.delete();
+					file = new File(diffFileName);
+					file.delete();
 					dijkstra.writeShortestPath(outputFileName);
 					dijkstra.compare(paths.get(i));
 				} catch (IOException e) {
