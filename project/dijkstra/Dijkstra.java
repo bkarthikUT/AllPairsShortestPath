@@ -112,7 +112,7 @@ public class Dijkstra {
 		String[] rows2 = input2.read();
 		
 		String lastRow_1 = rows1[rows1.length-1];
-		String lastRow_2 = rows1[rows2.length-1];
+		String lastRow_2 = rows2[rows2.length-1];
 		
 		System.out.println(lastRow_1);
 		System.out.println(lastRow_2);
