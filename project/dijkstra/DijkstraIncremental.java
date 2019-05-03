@@ -1,5 +1,6 @@
 package project.dijkstra;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,89 +27,165 @@ public class DijkstraIncremental {
 	long totalWritingTime = 0;
 	long totalTime = 0;
 	long incrementalDijkstraTime = 0;
-	long startTime=0;
-	long completeTime=0;
+	long startTime = 0;
+	long completeTime = 0;
 
 	public static void main(String args[]) {
 
-		 String[] inputPaths = new String[] { "./testcases/DensityGraphs/",
-		 "./testcases/SparseGraphs/" };
-		//String[] inputPaths = new String[] { "./testcases/SparseGraphs/" };
-		String[] densityGraphs = new String[] { "SocialNetwork-419", "WebPages-589", "YeastProteinInteraction-985",
-				"PsgAirTraffic-1148", "P2PKazaa-3403", "P2PWeb-6049", "InternetRouters-10900" };
+		// String[] inputPaths = new String[] { "./testcases/SparseGraphs/" };
+		// //String[] inputPaths = new String[] { "./testcases/SparseGraphs/" };
+		//// String[] densityGraphs = new String[] { "SocialNetwork-419",
+		// "WebPages-589", "YeastProteinInteraction-985",
+		//// "PsgAirTraffic-1148", "P2PKazaa-3403", "P2PWeb-6049",
+		// "InternetRouters-10900" };
+		// String[] densityGraphs = new String[] { "InternetRouters-10900" };
+		//
+		//
+		//// String[] densityGraphs = new String[] { "SocialNetwork-419",
+		// "WebPages-589", "YeastProteinInteraction-985",
+		//// "PsgAirTraffic-1148", "P2PKazaa-3403", "P2PWeb-6049",
+		// "InternetRouters-10900" };
+		//// String[] sparseGraphs = new String[] { "SYN_5", "NY_50", "BAY_1000",
+		//// "NY_5000", "COL_10000" };
+		// String[] sparseGraphs = new String[] { "SYN_5" };
+		// String inputFile = "graph";
+		// String incFile = "inc";
+		// String outputFile = "DKInc.out";
+		// for (String inputPath : inputPaths) {
+		// if (inputPath.equals("./testcases/DensityGraphs/")) {
+		// for (String densityGraph : densityGraphs) {
+		// String inputFileName = inputPath + densityGraph + "/" + inputFile;
+		// String outputFileName = inputPath + densityGraph + "/" + outputFile;
+		// String incFileName = inputPath + densityGraph + "/" + incFile;
+		// System.out.println("Processing " + inputFileName);
+		// // System.out.println(outputFileName);
+		//
+		// /**
+		// * File file = new File(outputFileName); boolean deleted = file.delete();
+		// * System.out.println("Deleted " + outputFileName + " >>>" + deleted);
+		// **/
+		// long startTime = System.nanoTime();
+		// DijkstraIncremental dijkstra = new DijkstraIncremental();
+		// dijkstra.doDikjstra(inputFileName, outputFileName);
+		//
+		// long incrementalStart = System.nanoTime();
+		// dijkstra.doIncremental(incFileName);
+		// long incrementalEnd = System.nanoTime();
+		//
+		// dijkstra.incrementalDijkstraTime = incrementalEnd - incrementalStart;
+		// long completedTime = System.nanoTime();
+		// System.out.println(" Running time of sequential dijkstra for: " +
+		// inputFileName + " is "
+		// + (completedTime - startTime ));
+		//
+		// try {
+		// dijkstra.writeShortestPath(outputFileName);
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+		// break;
+		// }
+		// } else {
+		// for (String sparseGraph : sparseGraphs) {
+		// String inputFileName = inputPath + sparseGraph + "/" + inputFile;
+		// String incFileName = inputPath + sparseGraph + "/" + incFile;
+		// String outputFileName = inputPath + sparseGraph + "/" + outputFile;
+		// System.out.println("Processing " + inputFileName);
+		// // System.out.println(outputFileName);
+		//
+		// /**
+		// * File file = new File(outputFileName); boolean deleted = file.delete();
+		// * System.out.println("Deleted " + outputFileName + " >>>" + deleted);
+		// **/
+		// long startTime = System.nanoTime();
+		// DijkstraIncremental dijkstra = new DijkstraIncremental();
+		// dijkstra.doDikjstra(inputFileName, outputFileName);
+		// long incrementalStart = System.nanoTime();
+		// dijkstra.doIncremental(incFileName);
+		// long incrementalEnd = System.nanoTime();
+		//
+		// dijkstra.incrementalDijkstraTime = incrementalEnd - incrementalStart;
+		// long completedTime = System.nanoTime();
+		// System.out.println(" Running time of sequential dijkstra for: " +
+		// inputFileName + " is "
+		// + (completedTime - startTime ));
+		//
+		// try {
+		// dijkstra.writeShortestPath(outputFileName);
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+		// }
+		// }
+		// }
 
-//		String[] densityGraphs = new String[] { "SocialNetwork-419", "WebPages-589", "YeastProteinInteraction-985",
-//				"PsgAirTraffic-1148", "P2PKazaa-3403", "P2PWeb-6049", "InternetRouters-10900" };
-//		 String[] sparseGraphs = new String[] { "SYN_5", "NY_50", "BAY_1000",
-//		 "NY_5000", "COL_10000" };
-		String[] sparseGraphs = new String[] { "SYN_5" };
-		String inputFile = "graph";
-		String incFile = "inc";
-		String outputFile = "DK.out";
+		// String inputFileName = args[0];
+		// String outputFileName = args[2];
+		// String incFileName = args[1];
+		// System.out.println("Processing " + inputFileName);
+		// // System.out.println(outputFileName);
+
+		// String[] inputPaths = new String[] { "./testcases/DensityGraphs/",
+		// "./testcases/SparseGraphs/", "./testcases/Density_Sweep/" };
+		String[] inputPaths = new String[] { "./testcases/DensityGraphs/", "./testcases/SparseGraphs/" };
+
+		String[] densityGraphs = new String[] {  "YeastProteinInteraction-985" };
+
+		 String[] sparseGraphs = new String[] { "SYN_5", "NY_50",	 "NY_5000", "COL_10000" };
+		//String[] sparseGraphs = new String[] { "SYN_5" };
+
+		//String[] densitySweepGraphs = new String[] {  };
+		//String[] densitySweepGraphs = new String[] { "d128", "d256" };
+
+		ArrayList<String> paths = new ArrayList<>();
 		for (String inputPath : inputPaths) {
 			if (inputPath.equals("./testcases/DensityGraphs/")) {
 				for (String densityGraph : densityGraphs) {
-					String inputFileName = inputPath + densityGraph + "/" + inputFile;
-					String outputFileName = inputPath + densityGraph + "/" + outputFile;
-					String incFileName = inputPath + densityGraph + "/" + incFile;
-					System.out.println("Processing " + inputFileName);
-					// System.out.println(outputFileName);
-
-					/**
-					 * File file = new File(outputFileName); boolean deleted = file.delete();
-					 * System.out.println("Deleted " + outputFileName + " >>>" + deleted);
-					 **/
-					long startTime = System.nanoTime();
-					DijkstraIncremental dijkstra = new DijkstraIncremental();
-					dijkstra.doDikjstra(inputFileName, outputFileName);
-					
-					long incrementalStart = System.nanoTime();
-					dijkstra.doIncremental(incFileName);
-					long incrementalEnd = System.nanoTime();
-					
-					dijkstra.incrementalDijkstraTime = incrementalEnd - incrementalStart;
-					long completedTime = System.nanoTime();
-					System.out.println(" Running time of sequential dijkstra for: " + inputFileName + " is "
-							+ (completedTime - startTime ));
-
-					try {
-						dijkstra.writeShortestPath(outputFileName);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					break;
+					String destination = inputPath + densityGraph;
+					paths.add(destination);
 				}
-			} else {
+			} else if (inputPath.equals("./testcases/SparseGraphs/")) {
 				for (String sparseGraph : sparseGraphs) {
-					String inputFileName = inputPath + sparseGraph + "/" + inputFile;
-					String incFileName = inputPath + sparseGraph + "/" + incFile;
-					String outputFileName = inputPath + sparseGraph + "/" + outputFile;
-					System.out.println("Processing " + inputFileName);
-					// System.out.println(outputFileName);
-
-					/**
-					 * File file = new File(outputFileName); boolean deleted = file.delete();
-					 * System.out.println("Deleted " + outputFileName + " >>>" + deleted);
-					 **/
-					long startTime = System.nanoTime();
-					DijkstraIncremental dijkstra = new DijkstraIncremental();
-					dijkstra.doDikjstra(inputFileName, outputFileName);
-					long incrementalStart = System.nanoTime();
-					dijkstra.doIncremental(incFileName);
-					long incrementalEnd = System.nanoTime();
-					
-					dijkstra.incrementalDijkstraTime = incrementalEnd - incrementalStart;
-					long completedTime = System.nanoTime();
-					System.out.println(" Running time of sequential dijkstra for: " + inputFileName + " is "
-							+ (completedTime - startTime ));
-
-					try {
-						dijkstra.writeShortestPath(outputFileName);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					String destination = inputPath + sparseGraph;
+					paths.add(destination);
 				}
+//			} else {
+//				for (String densitySweepGraph : densitySweepGraphs) {
+//					String destination = inputPath + densitySweepGraph;
+//					paths.add(destination);
+//				}
 			}
+
+		}
+
+		for (int i = 0; i < paths.size(); i++) {
+
+			String inputFileName = paths.get(i) + "/graph";
+			String incFileName = paths.get(i) + "/inc";
+			String outputFileName = paths.get(i) + "/DKInc.out";
+			String diffFileName = paths.get(i) + "/DKDiff.out";
+			DijkstraIncremental dijkstra = new DijkstraIncremental();
+			dijkstra.doDikjstra(inputFileName, outputFileName);
+
+			long incrementalStart = System.nanoTime();
+			dijkstra.doIncremental(incFileName);
+			long incrementalEnd = System.nanoTime();
+
+			dijkstra.incrementalDijkstraTime = incrementalEnd - incrementalStart;
+			System.out.println(" Running time of sequential dijkstra for: " + inputFileName + " is "
+					+ (dijkstra.incrementalDijkstraTime));
+
+			try {
+				File file = new File(outputFileName);
+				file.delete();
+				file = new File(diffFileName);
+				file.delete();
+				dijkstra.writeShortestPath(outputFileName);
+				// dijkstra.compare(paths.get(i));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 		}
 
 	}
@@ -120,11 +197,12 @@ public class DijkstraIncremental {
 		List<Vertex> transposeList = new ArrayList<>();
 		Vertex[] affectedVertices = new Vertex[noOfVertices + 1];
 		newSetOfVertices = new Vertex[noOfVertices + 1];
-		// incMatrix = new Vertex[noOfVertices+1][noOfVertices+1];
+
 		for (int i = 0; i < noOfVertices + 1; i++) {
 			Vertex temp = new Vertex(i);
 			newSetOfVertices[i] = temp;
 		}
+
 		Vertex newVertex = null;
 		for (String row : rows) {
 			if (row != null) {
@@ -177,10 +255,11 @@ public class DijkstraIncremental {
 		// first add the nodes that has incoming links to z
 		// extract min and get nodes that have incoming links to the extract min node
 
-		for (int i = 0; i < noOfVertices + 1; i++) {
-			Vertex temp = new Vertex(i);
-			newSetOfVertices[i] = temp;
-		}
+		// for (int i = 0; i < noOfVertices + 1; i++) {
+		// Vertex temp = new Vertex(i);
+		// newSetOfVertices[i] = temp;
+		// }
+
 		MinPriorityQueue minPriorityQueue = new MinPriorityQueue(1 + noOfVertices);
 		Vertex source = newSetOfVertices[noOfVertices];
 		minPriorityQueue.insert(source, 0);
@@ -190,6 +269,10 @@ public class DijkstraIncremental {
 			affectedVertices[u.vertexID] = u;
 			if (transposeList == null) {
 				transposeList = adjTransposeList[u.vertexID];
+			}
+			
+			if(transposeList == null) {
+				continue;
 			}
 			for (int k = 0; k < transposeList.size(); k++) {
 				Vertex incomingToNew = transposeList.get(k);
@@ -231,12 +314,12 @@ public class DijkstraIncremental {
 			transposeList = null;
 		}
 
-//		for (int i = 0; i < affectedVertices.length; i++) {
-//			if (affectedVertices[i] != null) {
-//				System.out.println(affectedVertices[i].vertexID);
-//			}
-//
-//		}
+		// for (int i = 0; i < affectedVertices.length; i++) {
+		// if (affectedVertices[i] != null) {
+		// System.out.println(affectedVertices[i].vertexID);
+		// }
+		//
+		// }
 
 		distances[source.vertexID][source.vertexID] = new Vertex(source.vertexID);
 		distances[source.vertexID][source.vertexID].weightFromSource = 0;
@@ -253,27 +336,41 @@ public class DijkstraIncremental {
 			// }
 		}
 		for (Vertex affectedVertex : affectedVertices) {
-			minPriorityQueue = new MinPriorityQueue(noOfVertices);
 			if (affectedVertex == null) {
 				continue;
 			}
 
+			if (affectedVertex.vertexID == source.vertexID) {
+				System.out.println("Here");
+			}
+
+			minPriorityQueue = new MinPriorityQueue(noOfVertices);
 			for (int i = 0; i < noOfVertices + 1; i++) {
 				Vertex temp = new Vertex(i);
 				newSetOfVertices[i] = temp;
 			}
-			for (Vertex x : newAdjList.get(new Integer(source.vertexID))) {
-				minPriorityQueue.insert(newSetOfVertices[x.vertexID],
-						distances[source.vertexID][x.vertexID].weightFromSource);
+			if (affectedVertex.vertexID != source.vertexID) {
+				minPriorityQueue.insert(source, 0);
+				neighbors = newAdjList.get(new Integer(source.vertexID));
+			} else {
+				for (Vertex x : newAdjList.get(new Integer(source.vertexID))) {
+					minPriorityQueue.insert(newSetOfVertices[x.vertexID],
+							distances[source.vertexID][x.vertexID].weightFromSource);
+				}
+				neighbors = null;
 			}
+
 
 			while (!minPriorityQueue.isEmpty()) {
 				Vertex u1 = minPriorityQueue.extractMin();
 				u1.color = Color.BLACK;
-				if(distances[source.vertexID][u1.vertexID] == null) {
+				if (distances[source.vertexID][u1.vertexID] == null) {
 					continue;
 				}
-				neighbors = adjList[u1.vertexID];
+				if (neighbors == null) {
+					neighbors = adjList[u1.vertexID];
+				}
+
 				for (Vertex x : neighbors) {
 					Vertex currentInfo = distances[affectedVertex.vertexID][x.vertexID];
 					int potentialValue = distances[affectedVertex.vertexID][source.vertexID].weightFromSource
@@ -291,11 +388,11 @@ public class DijkstraIncremental {
 						}
 					}
 				}
-				// }
+				neighbors = null;
 			}
 
 		}
-		//printMatrix();
+		// printMatrix();
 
 	}
 
@@ -378,9 +475,9 @@ public class DijkstraIncremental {
 		sb.append("Shortest path solution is:");
 		sb.append("\n");
 		output.write(sb.toString());
-		for (int i = 0; i < noOfVertices+1; i++) {
+		for (int i = 0; i < noOfVertices + 1; i++) {
 			sb = new StringBuilder();
-			for (int j = 0; j < noOfVertices+1; j++) {
+			for (int j = 0; j < noOfVertices + 1; j++) {
 				if (distances[i][j] == null) {
 					sb.append("INF ");
 				} else {
@@ -392,7 +489,7 @@ public class DijkstraIncremental {
 
 		}
 		sb = new StringBuilder();
-		sb.append("Total time taken for the incremental algorithm is:"+ incrementalDijkstraTime);
+		sb.append("Total time taken for the incremental algorithm is:" + incrementalDijkstraTime);
 		output.write(sb.toString());
 
 		output.close();
